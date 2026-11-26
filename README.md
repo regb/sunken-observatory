@@ -55,6 +55,13 @@ The one that plays well is meant to win between a third and a half of its games.
 
 ## Credits
 
+It began as a test of SGL on a game like
+[Shattered Pixel Dungeon](https://github.com/00-Evan/shattered-pixel-dungeon),
+itself built on Watabou's [Pixel Dungeon](https://github.com/watabou/pixel-dungeon):
+a turn-based descent, with floors that stay, items to identify, and the way
+back up. It follows their genre with its own rules, story and art, and uses
+none of their code or assets.
+
 The code is under the MIT license, see `LICENSE`. The tiles are from
 [Kenney's 1-Bit Pack](https://kenney.nl/assets/1-bit-pack), CC0, see
 `assets/KENNEY-1-BIT-PACK-LICENSE.txt`. The sounds and the music were
