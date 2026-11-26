@@ -1,0 +1,169 @@
+load("@rules_scala//scala:scala.bzl", "scala_binary", "scala_test")
+load("@sgl//bazel:cross.bzl", "scala_library")
+load("@sgl//bazel:scala_opts.bzl", "SGL_SCALACOPTS")
+load("@sgl//bazel/sgl:assets.bzl", "sgl_audio_assets", "sgl_drawable_assets")
+load("@sgl//bazel/sgl:defs.bzl", "sgl_core_library", "sgl_desktop_lwjgl_app", "sgl_desktop_native_app", "sgl_html5_opengl_app")
+
+# The rules of the game, which know nothing of SGL.
+scala_library(
+    name = "model",
+    srcs = glob(["model/*.scala"]),
+)
+
+scala_test(
+    name = "long-test",
+    size = "large",
+    srcs = [
+        "test/Bot.scala",
+        "test/LongSuite.scala",
+    ],
+    scalacopts = SGL_SCALACOPTS,
+    deps = [
+        ":model",
+    ],
+)
+
+scala_test(
+    name = "model-test",
+    size = "medium",
+    srcs = [
+        "test/Bot.scala",
+        "test/ModelSuite.scala",
+        "test/RecordsSuite.scala",
+    ],
+    scalacopts = SGL_SCALACOPTS,
+    deps = [
+        ":model",
+    ],
+)
+
+# How hard the game is: bazel run :balance -- 300 expert
+scala_binary(
+    name = "balance",
+    srcs = [
+        "test/Balance.scala",
+        "test/Bot.scala",
+        "test/Expert.scala",
+    ],
+    main_class = "observatory.model.Balance",
+    scalacopts = SGL_SCALACOPTS,
+    deps = [":model"],
+)
+
+# Kenney's 1-Bit Pack, CC0: see assets/KENNEY-1-BIT-PACK-LICENSE.txt.
+sgl_drawable_assets(
+    name = "sprites",
+    srcs = ["assets/sprites/tiles.png"],
+    source_density = "mdpi",
+    strip_prefix = "assets/sprites",
+    target_densities = ["mdpi"],
+)
+
+sgl_audio_assets(
+    name = "audio",
+    srcs = glob(["assets/audio/*.wav"]),
+    strip_prefix = "assets/audio",
+)
+
+sgl_core_library(
+    name = "core",
+    srcs = glob(["view/*.scala"]),
+    assets = [
+        ":audio",
+        ":sprites",
+    ],
+    package = "observatory.core",
+    deps = [
+        ":model",
+        "@sgl//engines:sgl-gameobject",
+    ],
+)
+
+sgl_desktop_lwjgl_app(
+    name = "desktop-lwjgl",
+    core_abstract_class = "observatory.core.AbstractApp",
+    data = [
+        ":audio",
+        ":sprites",
+    ],
+    extra_mixins = ["observatory.core.GeneratedAssetsProvider"],
+    file_save = "sunken-observatory.save",
+    frame_height = 640,
+    frame_width = 960,
+    main_class = "Main",
+    package = "observatory",
+    window_title = "Sunken Observatory",
+    deps = [":core"],
+)
+
+sgl_html5_opengl_app(
+    name = "html5",
+    assets = [
+        ":audio",
+        ":sprites",
+    ],
+    assets_strip_prefix = "assets",
+    canvas_height = 640,
+    canvas_width = 960,
+    core_abstract_class = "observatory.core.AbstractApp",
+    export_name = "SunkenObservatory",
+    extra_mixins = [
+        "observatory.core.GeneratedAssetsProvider",
+        "sgl.html5.LocalStorageSaveComponent",
+    ],
+    main_class = "Main",
+    package = "observatory",
+    page_title = "Sunken Observatory",
+    static_folder = "static",
+    deps = [":core"],
+)
+
+sgl_desktop_native_app(
+    name = "desktop-native",
+    assets = [
+        ":audio",
+        ":sprites",
+    ],
+    assets_strip_prefix = "assets",
+    backend_app = "NativeOpenGLApp",
+    core_abstract_class = "observatory.core.AbstractApp",
+    extra_mixins = ["observatory.core.GeneratedAssetsProvider"],
+    file_save = "sunken-observatory.save",
+    frame_height = 640,
+    frame_width = 960,
+    linkopts = [
+        "-lSDL2",
+        "-lSDL2_image",
+        "-lGLESv2",
+    ],
+    main_class = "Main",
+    package = "observatory",
+    use_screen2d = False,
+    deps = [":core"],
+)
+
+scala_test(
+    name = "play-test",
+    size = "medium",
+    srcs = [
+        "test/Bot.scala",
+        "test/PlaySuite.scala",
+    ],
+    env = {
+        "DISPLAY": "",
+        "EGL_PLATFORM": "surfaceless",
+        "LIBGL_ALWAYS_SOFTWARE": "1",
+        "WAYLAND_DISPLAY": "",
+    },
+    scalacopts = SGL_SCALACOPTS,
+    target_compatible_with = ["@platforms//os:linux"],
+    deps = [
+        ":core",
+        ":model",
+        "@sgl//backends/desktop-jvm-shared",
+        "@sgl//backends/headless-opengl:sgl-headless-opengl",
+        "@sgl//backends/lwjgl-shared:sgl-lwjgl-shared",
+        "@sgl//core:sgl-core",
+        "@sgl//engines:sgl-gameobject",
+    ],
+)
