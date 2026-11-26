@@ -1,6 +1,6 @@
-# Sunken Observatory
+![Sunken Observatory](docs/banner.png)
 
-**Play it in the browser: https://regb.github.io/sunken-observatory/**
+**[Play it in the browser](https://regb.github.io/sunken-observatory/)**
 
 A turn-based dungeon crawl: eight generated floors that stay as they are left,
 three callings, unidentified vials and charts, prisms, etched and cursed gear,
@@ -11,6 +11,12 @@ tower floods.
 It is written in Scala with [SGL](https://github.com/regb/scala-game-library)
 and its GameObject engine, and runs on the desktop (JVM and native) and in the
 browser from the same code.
+
+| | |
+| --- | --- |
+| ![The Archive, the first floors](docs/screenshots/archive.png) | ![The Orrery, a rank gained in a fight](docs/screenshots/orrery.png) |
+| ![The Cistern, among reeds](docs/screenshots/cistern.png) | ![The Star-Well, the last floors](docs/screenshots/star-well.png) |
+| ![The pack](docs/screenshots/pack.png) | ![The journal](docs/screenshots/journal.png) |
 
 ## Playing
 
@@ -52,4 +58,5 @@ The one that plays well is meant to win between a third and a half of its games.
 The code is under the MIT license, see `LICENSE`. The tiles are from
 [Kenney's 1-Bit Pack](https://kenney.nl/assets/1-bit-pack), CC0, see
 `assets/KENNEY-1-BIT-PACK-LICENSE.txt`. The sounds and the music were
-synthesized for this game.
+synthesized for this game. The banner and `docs/feature-graphic.png` are drawn
+from the same tiles by `docs/make_art.py`, and the screenshots are of the game.
