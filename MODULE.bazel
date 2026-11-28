@@ -5,7 +5,7 @@ module(name = "sunken_observatory")
 bazel_dep(name = "sgl.bzl", version = "0.0.0", repo_name = "sgl")
 git_override(
     module_name = "sgl.bzl",
-    commit = "895f5c3719faee29f564aa0dc2f331f7d00b2412",
+    commit = "ce5da506a1c8b3810385b574f3cbc00561b7a7fc",
     remote = "https://github.com/regb/scala-game-library.git",
 )
 
